@@ -1,0 +1,99 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model UrlAnalysis {
+  backlinksItems           Backlinks[]
+  booleanCriteriaItems     BooleanCriteria[]
+  booleanScore             Float?
+  comparativeCriteriaItems ComparativeCriteria[]
+  comparativeScore         Float?
+  contentSize              Int?
+  createdAt                DateTime              @default(now())
+  googlePosition           Int?
+  id                       String                @id @default(cuid())
+  isTarget                 Boolean?
+  pageSpeeds               PageSpeed[]
+  seoScore                 Float?
+  updatedAt                DateTime              @updatedAt
+  url                      String?
+}
+
+model ComparativeCriteria {
+  createdAt     DateTime     @default(now())
+  criterionName String?
+  id            String       @id @default(cuid())
+  rank          Int?
+  score         Float?
+  updatedAt     DateTime     @updatedAt
+  urlAnalysis   UrlAnalysis? @relation(fields: [urlAnalysisId], references: [id])
+  urlAnalysisId String?
+  value         Float?
+}
+
+model BooleanCriteria {
+  createdAt      DateTime     @default(now())
+  id             String       @id @default(cuid())
+  keywordInTitle Boolean?
+  titleLength    Boolean?
+  updatedAt      DateTime     @updatedAt
+  urlAnalysis    UrlAnalysis? @relation(fields: [urlAnalysisId], references: [id])
+  urlAnalysisId  String?
+}
+
+model SeoTask {
+  country   String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  keyword   String?
+  language  String?
+  location  String?
+  results   Int?
+  updatedAt DateTime @updatedAt
+  url       String?
+}
+
+model PageSpeed {
+  accessibility Float?
+  bestPractices Float?
+  cls           Float?
+  createdAt     DateTime     @default(now())
+  fcp           Float?
+  id            String       @id @default(cuid())
+  lcp           Float?
+  performance   Float?
+  seo           Float?
+  strategy      String?
+  tbt           Float?
+  updatedAt     DateTime     @updatedAt
+  urlAnalysis   UrlAnalysis? @relation(fields: [urlAnalysisId], references: [id])
+  urlAnalysisId String?
+}
+
+model Backlinks {
+  createdAt     DateTime     @default(now())
+  domains       Int?
+  id            String       @id @default(cuid())
+  score         Float?
+  total         Int?
+  updatedAt     DateTime     @updatedAt
+  urlAnalysis   UrlAnalysis? @relation(fields: [urlAnalysisId], references: [id])
+  urlAnalysisId String?
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
